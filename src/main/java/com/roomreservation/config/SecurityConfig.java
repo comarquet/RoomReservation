@@ -14,6 +14,7 @@ public class SecurityConfig {
       .authorizeHttpRequests(authorize -> authorize
         .anyRequest().permitAll() // Allow all requests without authentication
       );
+    http.headers().frameOptions().disable();
     return http.build();
   }
 }

@@ -8,7 +8,7 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "app_user")
+@Table(name = "SP_USER")
 public class UserEntity {
   
   @Id
@@ -34,6 +34,6 @@ public class UserEntity {
   
   private String role;
   
-  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
   private CardEntity cardEntity;
 }

@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "SP_BOOKING")
 public class BookingEntity {
   
   @Id

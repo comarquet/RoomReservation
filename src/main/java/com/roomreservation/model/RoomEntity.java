@@ -14,6 +14,7 @@ import com.roomreservation.record.BookingRecord;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "SP_ROOM")
 public class RoomEntity {
   
   @Id
@@ -28,7 +29,7 @@ public class RoomEntity {
   
   private boolean available;
   
-  @OneToMany(mappedBy = "room", cascade = CascadeType.ALL, orphanRemoval = true)
+  @OneToMany(mappedBy = "roomEntity", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<BookingEntity> bookingEntities = new ArrayList<>();
   
   public List<BookingRecord> getBookingEntities() {
