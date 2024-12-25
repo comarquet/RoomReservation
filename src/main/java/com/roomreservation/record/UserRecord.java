@@ -6,6 +6,5 @@ public record UserRecord(
   String lastName,
   String email,
   String password,
-  String role,
   Long cardId
 ) {}

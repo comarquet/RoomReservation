@@ -36,7 +36,6 @@ public class UserService {
     userEntity.setLastName(userEntityDetails.getLastName());
     userEntity.setEmail(userEntityDetails.getEmail());
     userEntity.setPassword(userEntityDetails.getPassword());
-    userEntity.setRole(userEntityDetails.getRole());
     return userDao.save(userEntity);
   }
   

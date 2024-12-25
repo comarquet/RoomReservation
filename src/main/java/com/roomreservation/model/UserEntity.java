@@ -36,8 +36,6 @@ public class UserEntity {
   @Size(min = 6, max = 100)
   private String password;
   
-  private String role;
-  
   @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
   private CardEntity cardEntity;
 }

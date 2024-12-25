@@ -1,7 +1,7 @@
 -- Insert mock users
-INSERT INTO SP_USER (id, first_name, last_name, email, password, role) VALUES
-                                                                            (1, 'John', 'Doe', 'john.doe@example.com', 'password123', 'USER'),
-                                                                            (2, 'Jane', 'Smith', 'jane.smith@example.com', 'password456', 'ADMIN');
+INSERT INTO SP_USER (id, first_name, last_name, email, password) VALUES
+                                                                            (1, 'John', 'Doe', 'john.doe@example.com', 'password123'),
+                                                                            (2, 'Jane', 'Smith', 'jane.smith@example.com', 'password456');
 
 -- Insert mock cards
 INSERT INTO SP_CARD (id, card_number, active, user_id) VALUES

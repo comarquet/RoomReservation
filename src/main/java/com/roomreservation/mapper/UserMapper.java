@@ -11,7 +11,6 @@ public class UserMapper {
       userEntity.getLastName(),
       userEntity.getEmail(),
       userEntity.getPassword(),
-      userEntity.getRole(),
       userEntity.getCardEntity().getId()
     );
   }
