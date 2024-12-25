@@ -1,5 +1,6 @@
 package com.roomreservation.api;
 
+import com.roomreservation.record.BookingCommandRecord;
 import com.roomreservation.record.BookingRecord;
 import com.roomreservation.service.BookingService;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,8 @@ public class BookingController {
   }
   
   @PostMapping
-  public ResponseEntity<BookingRecord> createBooking(@RequestBody BookingRecord BookingRecord) {
-    return ResponseEntity.ok(bookingService.createBooking(BookingRecord));
+  public ResponseEntity<BookingRecord> createBooking(@RequestBody BookingCommandRecord bookingCommandRecord) {
+    return ResponseEntity.ok(bookingService.createBooking(bookingCommandRecord));
   }
   
   @DeleteMapping("/{id}")

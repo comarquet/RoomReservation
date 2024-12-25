@@ -4,12 +4,15 @@ import com.roomreservation.mapper.UserMapper;
 import com.roomreservation.model.UserEntity;
 import com.roomreservation.record.UserRecord;
 import com.roomreservation.repository.UserDao;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Transactional
 @Service
 public class UserService {
   
@@ -26,8 +29,23 @@ public class UserService {
     return userDao.findById(id).orElseThrow(() -> new RuntimeException("UserEntity not found"));
   }
   
+  @Transactional
   public UserEntity createUser(UserEntity userEntity) {
-    return userDao.save(userEntity);
+    // Check if email already exists
+    UserEntity existingUser = userDao.findByEmail(userEntity.getEmail());
+    if (existingUser != null) {
+      throw new RuntimeException("Email already exists");
+    }
+    
+    // Ensure new entity
+    userEntity.setId(null);
+    userEntity.setCardEntity(null);
+    
+    try {
+      return userDao.save(userEntity);
+    } catch (DataIntegrityViolationException e) {
+      throw new RuntimeException("Failed to create user: " + e.getMessage());
+    }
   }
   
   public UserEntity updateUser(Long id, UserEntity userEntityDetails) {

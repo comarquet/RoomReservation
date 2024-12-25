@@ -29,13 +29,13 @@ public class RoomController {
   }
   
   @PostMapping
-  public ResponseEntity<RoomRecord> createRoom(@RequestBody RoomRecord RoomRecord) {
-    return ResponseEntity.ok(roomService.createRoom(RoomRecord));
+  public ResponseEntity<RoomRecord> createRoom(@RequestBody RoomRecord roomCommand) {
+    return ResponseEntity.ok(roomService.createRoom(roomCommand));
   }
   
   @PutMapping("/{id}")
-  public ResponseEntity<RoomRecord> updateRoom(@PathVariable Long id, @RequestBody RoomRecord RoomRecord) {
-    return ResponseEntity.ok(roomService.updateRoom(id, RoomRecord));
+  public ResponseEntity<RoomRecord> updateRoom(@PathVariable Long id, @RequestBody RoomRecord roomCommand) {
+    return ResponseEntity.ok(roomService.updateRoom(id, roomCommand));
   }
   
   @DeleteMapping("/{id}")

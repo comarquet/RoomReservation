@@ -1,6 +1,8 @@
 package com.roomreservation.api;
 
+import com.roomreservation.mapper.CardMapper;
 import com.roomreservation.model.CardEntity;
+import com.roomreservation.record.CardCommandRecord;
 import com.roomreservation.record.CardRecord;
 import com.roomreservation.service.CardService;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +27,11 @@ public class CardController {
   }
   
   @PostMapping("/assign/{userId}")
-  public ResponseEntity<CardEntity> assignCardToUser(@PathVariable Long userId, @RequestBody CardRecord CardRecord) {
-    return ResponseEntity.ok(cardService.assignCardToUser(userId, CardRecord));
+  public ResponseEntity<CardRecord> assignCardToUser(
+    @PathVariable Long userId,
+    @RequestBody CardCommandRecord cardCommand) {
+    CardEntity card = cardService.assignCardToUser(userId, cardCommand);
+    return ResponseEntity.ok(CardMapper.of(card));
   }
   
   @PostMapping("/deactivate/{userId}")

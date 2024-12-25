@@ -3,6 +3,7 @@ package com.roomreservation.service;
 import com.roomreservation.mapper.CardMapper;
 import com.roomreservation.model.CardEntity;
 import com.roomreservation.model.UserEntity;
+import com.roomreservation.record.CardCommandRecord;
 import com.roomreservation.record.CardRecord;
 import com.roomreservation.repository.CardDao;
 import com.roomreservation.repository.UserDao;
@@ -28,7 +29,7 @@ public class CardService {
       .collect(Collectors.toList());
   }
   
-  public CardEntity assignCardToUser(Long userId, CardRecord CardRecord) {
+  public CardEntity assignCardToUser(Long userId, CardCommandRecord CardCommandRecord) {
     UserEntity userEntity = userDao.findById(userId)
       .orElseThrow(() -> new RuntimeException("UserEntity not found"));
     
@@ -37,8 +38,8 @@ public class CardService {
     }
     
     CardEntity cardEntity = new CardEntity();
-    cardEntity.setCardNumber(CardRecord.cardNumber());
-    cardEntity.setActive(CardRecord.active());
+    cardEntity.setCardNumber(CardCommandRecord.cardNumber());
+    cardEntity.setActive(CardCommandRecord.active());
     cardEntity.setUserEntity(userEntity);
     
     return cardDao.save(cardEntity);

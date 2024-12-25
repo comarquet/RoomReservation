@@ -1,6 +1,8 @@
 package com.roomreservation.api;
 
+import com.roomreservation.mapper.UserMapper;
 import com.roomreservation.model.UserEntity;
+import com.roomreservation.record.UserCommandRecord;
 import com.roomreservation.record.UserRecord;
 import com.roomreservation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,21 +26,32 @@ public class UserController {
   }
   
   @GetMapping("/{id}")
-  public ResponseEntity<UserEntity> getUserById(@PathVariable Long id) {
-    UserEntity userEntity = userService.getUserById(id);
-    return ResponseEntity.ok(userEntity);
+  public ResponseEntity<UserRecord> getUserById(@PathVariable Long id) {
+    return ResponseEntity.ok(UserMapper.of(userService.getUserById(id)));
   }
   
   @PostMapping
-  public ResponseEntity<UserEntity> createUser(@Validated @RequestBody UserEntity userEntity) {
-    UserEntity newUserEntity = userService.createUser(userEntity);
-    return ResponseEntity.status(201).body(newUserEntity);
+  public ResponseEntity<UserRecord> createUser(@Validated @RequestBody UserCommandRecord userCommand) {
+    UserEntity entity = new UserEntity();
+    entity.setFirstName(userCommand.firstName());
+    entity.setLastName(userCommand.lastName());
+    entity.setEmail(userCommand.email());
+    entity.setPassword(userCommand.password());
+    
+    UserEntity createdUser = userService.createUser(entity);
+    return ResponseEntity.status(201).body(UserMapper.of(createdUser));
   }
   
   @PutMapping("/{id}")
-  public ResponseEntity<UserEntity> updateUser(@PathVariable Long id, @Validated @RequestBody UserEntity userEntityDetails) {
-    UserEntity updatedUserEntity = userService.updateUser(id, userEntityDetails);
-    return ResponseEntity.ok(updatedUserEntity);
+  public ResponseEntity<UserRecord> updateUser(@PathVariable Long id, @Validated @RequestBody UserCommandRecord userCommand) {
+    UserEntity entity = new UserEntity();
+    entity.setFirstName(userCommand.firstName());
+    entity.setLastName(userCommand.lastName());
+    entity.setEmail(userCommand.email());
+    entity.setPassword(userCommand.password());
+    
+    UserEntity updatedUser = userService.updateUser(id, entity);
+    return ResponseEntity.ok(UserMapper.of(updatedUser));
   }
   
   @DeleteMapping("/{id}")

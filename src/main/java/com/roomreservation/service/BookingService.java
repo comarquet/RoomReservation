@@ -4,6 +4,7 @@ import com.roomreservation.mapper.BookingMapper;
 import com.roomreservation.model.BookingEntity;
 import com.roomreservation.model.RoomEntity;
 import com.roomreservation.model.UserEntity;
+import com.roomreservation.record.BookingCommandRecord;
 import com.roomreservation.record.BookingRecord;
 import com.roomreservation.repository.BookingDao;
 import com.roomreservation.repository.RoomDao;
@@ -38,17 +39,17 @@ public class BookingService {
     return BookingMapper.of(bookingEntity);
   }
   
-  public BookingRecord createBooking(BookingRecord bookingRecord) {
-    RoomEntity roomEntity = roomDao.findById(bookingRecord.roomId())
+  public BookingRecord createBooking(BookingCommandRecord bookingCommandRecord) {
+    RoomEntity roomEntity = roomDao.findById(bookingCommandRecord.roomId())
       .orElseThrow(() -> new RuntimeException("RoomEntity not found"));
-    UserEntity userEntity = userDao.findById(bookingRecord.userId())
+    UserEntity userEntity = userDao.findById(bookingCommandRecord.userId())
       .orElseThrow(() -> new RuntimeException("UserEntity not found"));
     
     BookingEntity bookingEntity = new BookingEntity();
     bookingEntity.setRoomEntity(roomEntity);
     bookingEntity.setUserEntity(userEntity);
-    bookingEntity.setStartTime(bookingRecord.startTime());
-    bookingEntity.setEndTime(bookingRecord.endTime());
+    bookingEntity.setStartTime(bookingCommandRecord.startTime());
+    bookingEntity.setEndTime(bookingCommandRecord.endTime());
     
     BookingEntity savedBookingEntity = bookingDao.save(bookingEntity);
     return BookingMapper.of(savedBookingEntity);

@@ -11,7 +11,7 @@ public class UserMapper {
       userEntity.getLastName(),
       userEntity.getEmail(),
       userEntity.getPassword(),
-      userEntity.getCardEntity().getId()
+      userEntity.getCardEntity() != null ? userEntity.getCardEntity().getId() : null
     );
   }
 }
