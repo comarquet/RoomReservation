@@ -1,14 +1,15 @@
 package com.roomreservation.model;
 
 import com.roomreservation.mapper.BookingMapper;
+import com.roomreservation.record.BookingRecord;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import com.roomreservation.record.BookingRecord;
 
 @Entity
 @Data

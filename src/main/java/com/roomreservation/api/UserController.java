@@ -1,6 +1,7 @@
 package com.roomreservation.api;
 
 import com.roomreservation.model.UserEntity;
+import com.roomreservation.record.UserRecord;
 import com.roomreservation.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
@@ -17,8 +19,8 @@ public class UserController {
   private UserService userService;
   
   @GetMapping
-  public List<UserEntity> getAllUsers() {
-    return userService.getAllUsers();
+  public ResponseEntity<List<UserRecord>> getAllUsers() {
+    return ResponseEntity.ok(userService.getAllUsers());
   }
   
   @GetMapping("/{id}")

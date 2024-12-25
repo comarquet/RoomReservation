@@ -1,11 +1,15 @@
 package com.roomreservation.service;
 
-import com.roomreservation.record.CardRecord;
+import com.roomreservation.mapper.CardMapper;
 import com.roomreservation.model.CardEntity;
 import com.roomreservation.model.UserEntity;
+import com.roomreservation.record.CardRecord;
 import com.roomreservation.repository.CardDao;
 import com.roomreservation.repository.UserDao;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CardService {
@@ -16,6 +20,12 @@ public class CardService {
   public CardService(CardDao cardDao, UserDao userDao) {
     this.cardDao = cardDao;
     this.userDao = userDao;
+  }
+  
+  public List<CardRecord> getAllCards() {
+    return cardDao.findAll().stream()
+      .map(CardMapper::of)
+      .collect(Collectors.toList());
   }
   
   public CardEntity assignCardToUser(Long userId, CardRecord CardRecord) {

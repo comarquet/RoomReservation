@@ -1,11 +1,14 @@
 package com.roomreservation.service;
 
+import com.roomreservation.mapper.UserMapper;
 import com.roomreservation.model.UserEntity;
+import com.roomreservation.record.UserRecord;
 import com.roomreservation.repository.UserDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -13,8 +16,10 @@ public class UserService {
   @Autowired
   private UserDao userDao;
   
-  public List<UserEntity> getAllUsers() {
-    return userDao.findAll();
+  public List<UserRecord> getAllUsers() {
+    return userDao.findAll().stream()
+      .map(UserMapper::of)
+      .collect(Collectors.toList());
   }
   
   public UserEntity getUserById(Long id) {
