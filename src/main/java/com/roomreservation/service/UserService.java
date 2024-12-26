@@ -3,13 +3,10 @@ package com.roomreservation.service;
 import com.roomreservation.mapper.UserMapper;
 import com.roomreservation.model.CardEntity;
 import com.roomreservation.model.UserEntity;
-import com.roomreservation.record.CardCommandRecord;
 import com.roomreservation.record.UserRecord;
 import com.roomreservation.repository.CardDao;
 import com.roomreservation.repository.UserDao;
 import jakarta.transaction.Transactional;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -72,6 +69,14 @@ public class UserService {
   
   public void deleteUser(Long id) {
     userDao.deleteById(id);
+  }
+  
+  public UserEntity validateLogin(String email, String password) {
+    UserEntity user = userDao.findByEmail(email);
+    if (user == null || !user.getPassword().equals(password)) {
+      throw new RuntimeException("Invalid email or password");
+    }
+    return user;
   }
 }
 
