@@ -4,7 +4,5 @@ public record UserCommandRecord(
   String firstName,
   String lastName,
   String email,
-  String password,
-  String role,
-  Long cardId
+  String password
 ) {}
