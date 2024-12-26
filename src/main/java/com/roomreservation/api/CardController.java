@@ -26,14 +26,6 @@ public class CardController {
     return ResponseEntity.ok(cardService.getAllCards());
   }
   
-  @PostMapping("/assign/{userId}")
-  public ResponseEntity<CardRecord> assignCardToUser(
-    @PathVariable Long userId,
-    @RequestBody CardCommandRecord cardCommand) {
-    CardEntity card = cardService.assignCardToUser(userId, cardCommand);
-    return ResponseEntity.ok(CardMapper.of(card));
-  }
-  
   @PostMapping("/deactivate/{userId}")
   public ResponseEntity<Void> deactivateCard(@PathVariable Long userId) {
     cardService.deactivateCard(userId);

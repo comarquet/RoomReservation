@@ -21,11 +21,9 @@ public class UserEntity {
   private Long id;
   
   @NotNull
-  @Size(min = 2, max = 50)
   private String firstName;
   
   @NotNull
-  @Size(min = 2, max = 50)
   private String lastName;
   
   @NotNull
@@ -34,7 +32,6 @@ public class UserEntity {
   private String email;
   
   @NotNull
-  @Size(min = 6, max = 100)
   private String password;
   
   @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)

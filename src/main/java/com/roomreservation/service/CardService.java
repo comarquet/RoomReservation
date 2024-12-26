@@ -7,6 +7,7 @@ import com.roomreservation.record.CardCommandRecord;
 import com.roomreservation.record.CardRecord;
 import com.roomreservation.repository.CardDao;
 import com.roomreservation.repository.UserDao;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,19 +30,27 @@ public class CardService {
       .collect(Collectors.toList());
   }
   
-  public CardEntity assignCardToUser(Long userId, CardCommandRecord CardCommandRecord) {
+  @Transactional
+  public CardEntity assignCardToUser(Long userId, CardCommandRecord cardCommand) {
     UserEntity userEntity = userDao.findById(userId)
-      .orElseThrow(() -> new RuntimeException("UserEntity not found"));
+      .orElseThrow(() -> new RuntimeException("User not found"));
+    
+    if (cardDao.findByCardNumber(cardCommand.cardNumber()).isPresent()) {
+      throw new RuntimeException("Card number already exists");
+    }
     
     if (userEntity.getCardEntity() != null) {
-      throw new RuntimeException("UserEntity already has a cardEntity");
+      cardDao.delete(userEntity.getCardEntity());
+      userEntity.setCardEntity(null);
     }
     
     CardEntity cardEntity = new CardEntity();
-    cardEntity.setCardNumber(CardCommandRecord.cardNumber());
-    cardEntity.setActive(CardCommandRecord.active());
+    cardEntity.setCardNumber(cardCommand.cardNumber());
+    cardEntity.setActive(cardCommand.active());
     cardEntity.setUserEntity(userEntity);
+    userEntity.setCardEntity(cardEntity);
     
+    userDao.save(userEntity);
     return cardDao.save(cardEntity);
   }
   
