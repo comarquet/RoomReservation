@@ -1,5 +1,6 @@
 package com.roomreservation.api;
 
+import com.roomreservation.BookingConflictException;
 import com.roomreservation.record.BookingCommandRecord;
 import com.roomreservation.record.BookingRecord;
 import com.roomreservation.service.BookingService;
@@ -35,8 +36,12 @@ public class BookingController {
   }
   
   @PostMapping
-  public ResponseEntity<BookingRecord> createBooking(@RequestBody BookingCommandRecord bookingCommandRecord) {
-    return ResponseEntity.ok(bookingService.createBooking(bookingCommandRecord));
+  public ResponseEntity<?> createBooking(@RequestBody BookingCommandRecord bookingCommandRecord) {
+    try {
+      return ResponseEntity.ok(bookingService.createBooking(bookingCommandRecord));
+    } catch (BookingConflictException e) {
+      return ResponseEntity.status(409).body(e.getMessage());
+    }
   }
   
   @DeleteMapping("/{id}")

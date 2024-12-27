@@ -1,5 +1,6 @@
 package com.roomreservation.service;
 
+import com.roomreservation.BookingConflictException;
 import com.roomreservation.mapper.BookingMapper;
 import com.roomreservation.model.BookingEntity;
 import com.roomreservation.model.RoomEntity;
@@ -45,33 +46,40 @@ public class BookingService {
   
   @Transactional
   public BookingRecord createBooking(BookingCommandRecord bookingCommand) {
-    validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
+    try {
+      validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
+      
+      if (hasConflictingBookings(bookingCommand.roomId(), bookingCommand.startTime(),
+        bookingCommand.endTime(), -1L)) {
+        throw new BookingConflictException("Room is already booked for this time slot");
+      }
+      
+      RoomEntity room = roomDao.findById(bookingCommand.roomId())
+        .orElseThrow(() -> new RuntimeException("Room not found"));
+      
+      UserEntity user = userDao.findById(bookingCommand.userId())
+        .orElseThrow(() -> new RuntimeException("User not found"));
+      
+      if (!roomService.getAvailableRooms(bookingCommand.startTime(), bookingCommand.endTime())
+        .stream()
+        .anyMatch(r -> r.id().equals(room.getId()))) {
+        throw new RuntimeException("Room is not available for the selected time slot");
+      }
+      
+      BookingEntity booking = new BookingEntity();
+      booking.setStartTime(bookingCommand.startTime());
+      booking.setEndTime(bookingCommand.endTime());
+      booking.setRoomEntity(room);
+      booking.setUserEntity(user);
+      booking.setActive(true);
+      
+      return BookingMapper.of(bookingDao.save(booking));
     
-    if (hasConflictingBookings(bookingCommand.roomId(), bookingCommand.startTime(),
-      bookingCommand.endTime(), -1L)) {
-      throw new RuntimeException("Room is already booked for this time slot");
+    } catch (BookingConflictException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new RuntimeException("Error creating booking: " + e.getMessage());
     }
-    
-    RoomEntity room = roomDao.findById(bookingCommand.roomId())
-      .orElseThrow(() -> new RuntimeException("Room not found"));
-    
-    UserEntity user = userDao.findById(bookingCommand.userId())
-      .orElseThrow(() -> new RuntimeException("User not found"));
-    
-    if (!roomService.getAvailableRooms(bookingCommand.startTime(), bookingCommand.endTime())
-      .stream()
-      .anyMatch(r -> r.id().equals(room.getId()))) {
-      throw new RuntimeException("Room is not available for the selected time slot");
-    }
-    
-    BookingEntity booking = new BookingEntity();
-    booking.setStartTime(bookingCommand.startTime());
-    booking.setEndTime(bookingCommand.endTime());
-    booking.setRoomEntity(room);
-    booking.setUserEntity(user);
-    booking.setActive(true);
-    
-    return BookingMapper.of(bookingDao.save(booking));
   }
   
   private void validateBookingTime(LocalDateTime startTime, LocalDateTime endTime) {
