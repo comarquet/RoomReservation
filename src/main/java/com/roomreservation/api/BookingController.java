@@ -29,6 +29,11 @@ public class BookingController {
     return ResponseEntity.ok(bookingService.getBookingById(id));
   }
   
+  @GetMapping("/user/{userId}")
+  public ResponseEntity<List<BookingRecord>> getUserBookings(@PathVariable Long userId) {
+    return ResponseEntity.ok(bookingService.getBookingsByUserId(userId));
+  }
+  
   @PostMapping
   public ResponseEntity<BookingRecord> createBooking(@RequestBody BookingCommandRecord bookingCommandRecord) {
     return ResponseEntity.ok(bookingService.createBooking(bookingCommandRecord));
@@ -38,5 +43,12 @@ public class BookingController {
   public ResponseEntity<Void> deleteBooking(@PathVariable Long id) {
     bookingService.deleteBooking(id);
     return ResponseEntity.noContent().build();
+  }
+  
+  @PutMapping("/{id}")
+  public ResponseEntity<BookingRecord> updateBooking(
+    @PathVariable Long id,
+    @RequestBody BookingCommandRecord bookingCommand) {
+    return ResponseEntity.ok(bookingService.updateBooking(id, bookingCommand));
   }
 }

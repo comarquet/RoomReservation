@@ -6,6 +6,5 @@ public record RoomRecord(
   Long id,
   String name,
   int capacity,
-  boolean available,
   List<BookingRecord> bookings
 ) {}

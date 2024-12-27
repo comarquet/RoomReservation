@@ -9,7 +9,6 @@ public class RoomMapper {
       roomEntity.getId(),
       roomEntity.getName(),
       roomEntity.getCapacity(),
-      roomEntity.isAvailable(),
       roomEntity.getBookingEntities()
     );
   }

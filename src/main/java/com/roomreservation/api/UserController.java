@@ -32,14 +32,18 @@ public class UserController {
   
   @PostMapping
   public ResponseEntity<UserRecord> createUser(@Validated @RequestBody UserCommandRecord userCommand) {
-    UserEntity entity = new UserEntity();
-    entity.setFirstName(userCommand.firstName());
-    entity.setLastName(userCommand.lastName());
-    entity.setEmail(userCommand.email());
-    entity.setPassword(userCommand.password());
-    
-    UserEntity createdUser = userService.createUser(entity);
-    return ResponseEntity.status(201).body(UserMapper.of(createdUser));
+    try {
+      UserEntity entity = new UserEntity();
+      entity.setFirstName(userCommand.firstName());
+      entity.setLastName(userCommand.lastName());
+      entity.setEmail(userCommand.email());
+      entity.setPassword(userCommand.password());
+      
+      UserEntity createdUser = userService.createUser(entity);
+      return ResponseEntity.status(201).body(UserMapper.of(createdUser));
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(400).body(null);
+    }
   }
   
   @PutMapping("/{id}")

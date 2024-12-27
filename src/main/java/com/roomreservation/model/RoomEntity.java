@@ -28,8 +28,6 @@ public class RoomEntity {
   @Column(nullable = false)
   private int capacity;
   
-  private boolean available;
-  
   @OneToMany(mappedBy = "roomEntity", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<BookingEntity> bookingEntities = new ArrayList<>();
   

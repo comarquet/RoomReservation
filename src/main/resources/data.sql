@@ -1,7 +1,8 @@
 -- Insert mock users
 INSERT INTO SP_USER (first_name, last_name, email, password) VALUES
                                                                  ('John', 'Doe', 'john.doe@example.com', 'password123'),
-                                                                 ('Jane', 'Smith', 'jane.smith@example.com', 'password456');
+                                                                 ('Jane', 'Smith', 'jane.smith@example.com', 'password456'),
+                                                                 ('a', 'b', 'a@a.com', 'a');
 
 -- Insert mock cards
 INSERT INTO SP_CARD (card_number, active, user_id) VALUES
@@ -9,9 +10,9 @@ INSERT INTO SP_CARD (card_number, active, user_id) VALUES
                                                        ('CARD67890', false, 2);
 
 -- Insert mock rooms
-INSERT INTO SP_ROOM (name, capacity, available) VALUES
-                                                    ('Conference Room A', 10, true),
-                                                    ('Meeting Room B', 5, false);
+INSERT INTO SP_ROOM (name, capacity) VALUES
+                                                    ('Conference Room A', 10),
+                                                    ('Meeting Room B', 5);
 
 -- Insert mock bookings
 INSERT INTO SP_BOOKING (start_time, end_time, active, room_id, user_id) VALUES

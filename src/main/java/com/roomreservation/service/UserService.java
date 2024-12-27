@@ -7,6 +7,7 @@ import com.roomreservation.record.UserRecord;
 import com.roomreservation.repository.CardDao;
 import com.roomreservation.repository.UserDao;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 public class UserService {
   private final UserDao userDao;
   private final CardDao cardDao;
+  private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
   
   public UserService(UserDao userDao, CardDao cardDao) {
     this.userDao = userDao;
@@ -36,11 +38,12 @@ public class UserService {
   
   @Transactional
   public UserEntity createUser(UserEntity userEntity) {
-    if (userDao.findByEmail(userEntity.getEmail()) != null) {
+    if (userDao.findByEmailIgnoreCase(userEntity.getEmail()) != null) {
       throw new RuntimeException("Email already exists");
     }
     
     userEntity.setId(null);
+    userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
     UserEntity savedUser = userDao.save(userEntity);
     
     CardEntity cardEntity = new CardEntity();
@@ -72,8 +75,8 @@ public class UserService {
   }
   
   public UserEntity validateLogin(String email, String password) {
-    UserEntity user = userDao.findByEmail(email);
-    if (user == null || !user.getPassword().equals(password)) {
+    UserEntity user = userDao.findByEmailIgnoreCase(email);
+    if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
       throw new RuntimeException("Invalid email or password");
     }
     return user;

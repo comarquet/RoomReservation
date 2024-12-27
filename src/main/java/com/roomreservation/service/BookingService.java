@@ -47,6 +47,11 @@ public class BookingService {
   public BookingRecord createBooking(BookingCommandRecord bookingCommand) {
     validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
     
+    if (hasConflictingBookings(bookingCommand.roomId(), bookingCommand.startTime(),
+      bookingCommand.endTime(), -1L)) {
+      throw new RuntimeException("Room is already booked for this time slot");
+    }
+    
     RoomEntity room = roomDao.findById(bookingCommand.roomId())
       .orElseThrow(() -> new RuntimeException("Room not found"));
     
@@ -83,5 +88,55 @@ public class BookingService {
   
   public void deleteBooking(Long id) {
     bookingDao.deleteById(id);
+  }
+  
+  public List<BookingRecord> getBookingsByUserId(Long userId) {
+    return bookingDao.findByUserEntityId(userId).stream()
+      .map(BookingMapper::of)
+      .collect(Collectors.toList());
+  }
+  
+  @Transactional
+  public BookingRecord updateBooking(Long id, BookingCommandRecord bookingCommand) {
+    validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
+    
+    if (hasConflictingBookings(bookingCommand.roomId(), bookingCommand.startTime(),
+      bookingCommand.endTime(), id)) {
+      throw new RuntimeException("Room is already booked for this time slot");
+    }
+    
+    BookingEntity booking = bookingDao.findById(id)
+      .orElseThrow(() -> new RuntimeException("Booking not found"));
+    
+    validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
+    
+    RoomEntity room = roomDao.findById(bookingCommand.roomId())
+      .orElseThrow(() -> new RuntimeException("Room not found"));
+    
+    if (!booking.getUserEntity().getId().equals(bookingCommand.userId())) {
+      throw new RuntimeException("Cannot modify booking owned by another user");
+    }
+    
+    if (!room.getId().equals(booking.getRoomEntity().getId()) &&
+      !roomService.getAvailableRooms(bookingCommand.startTime(), bookingCommand.endTime())
+        .stream()
+        .anyMatch(r -> r.id().equals(room.getId()))) {
+      throw new RuntimeException("Room is not available for the selected time slot");
+    }
+    
+    booking.setStartTime(bookingCommand.startTime());
+    booking.setEndTime(bookingCommand.endTime());
+    booking.setRoomEntity(room);
+    
+    return BookingMapper.of(bookingDao.save(booking));
+  }
+  
+  private boolean hasConflictingBookings(Long roomId, LocalDateTime startTime, LocalDateTime endTime, Long excludeBookingId) {
+    return bookingDao.findByRoomEntityId(roomId).stream()
+      .filter(booking -> !booking.getId().equals(excludeBookingId))
+      .anyMatch(booking ->
+        (startTime.isBefore(booking.getEndTime()) || startTime.isEqual(booking.getEndTime())) &&
+          (endTime.isAfter(booking.getStartTime()) || endTime.isEqual(booking.getStartTime()))
+      );
   }
 }

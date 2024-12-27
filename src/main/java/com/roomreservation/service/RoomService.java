@@ -65,10 +65,6 @@ public class RoomService {
   }
   
   private boolean isRoomAvailable(RoomEntity room, LocalDateTime startTime, LocalDateTime endTime) {
-    if (!room.isAvailable()) {
-      return false;
-    }
-    
     List<BookingRecord> bookings = room.getBookingEntities();
     return bookings.stream()
       .noneMatch(booking ->
