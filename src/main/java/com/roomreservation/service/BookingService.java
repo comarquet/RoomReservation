@@ -71,7 +71,6 @@ public class BookingService {
       booking.setEndTime(bookingCommand.endTime());
       booking.setRoomEntity(room);
       booking.setUserEntity(user);
-      booking.setActive(true);
       
       return BookingMapper.of(bookingDao.save(booking));
     
