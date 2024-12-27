@@ -23,8 +23,6 @@ public class BookingEntity {
   @Column(nullable = false)
   private LocalDateTime endTime;
   
-  private boolean active;
-  
   @ManyToOne
   @JoinColumn(name = "room_id", nullable = false)
   private RoomEntity roomEntity;

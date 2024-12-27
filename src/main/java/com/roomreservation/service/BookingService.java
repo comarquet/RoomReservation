@@ -106,37 +106,44 @@ public class BookingService {
   
   @Transactional
   public BookingRecord updateBooking(Long id, BookingCommandRecord bookingCommand) {
-    validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
-    
-    if (hasConflictingBookings(bookingCommand.roomId(), bookingCommand.startTime(),
-      bookingCommand.endTime(), id)) {
-      throw new RuntimeException("Room is already booked for this time slot");
+    try {
+      validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
+      
+      if (hasConflictingBookings(bookingCommand.roomId(), bookingCommand.startTime(),
+        bookingCommand.endTime(), id)) {
+        throw new BookingConflictException("Room is already booked for this time slot");
+      }
+      
+      BookingEntity booking = bookingDao.findById(id)
+        .orElseThrow(() -> new RuntimeException("Booking not found"));
+      
+      validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
+      
+      RoomEntity room = roomDao.findById(bookingCommand.roomId())
+        .orElseThrow(() -> new RuntimeException("Room not found"));
+      
+      if (!booking.getUserEntity().getId().equals(bookingCommand.userId())) {
+        throw new RuntimeException("Cannot modify booking owned by another user");
+      }
+      
+      if (!room.getId().equals(booking.getRoomEntity().getId()) &&
+        !roomService.getAvailableRooms(bookingCommand.startTime(), bookingCommand.endTime())
+          .stream()
+          .anyMatch(r -> r.id().equals(room.getId()))) {
+        throw new RuntimeException("Room is not available for the selected time slot");
+      }
+      
+      booking.setStartTime(bookingCommand.startTime());
+      booking.setEndTime(bookingCommand.endTime());
+      booking.setRoomEntity(room);
+      
+      return BookingMapper.of(bookingDao.save(booking));
+      
+    } catch (BookingConflictException e) {
+      throw e;
+    } catch (Exception e) {
+      throw new RuntimeException("Error updating booking: " + e.getMessage());
     }
-    
-    BookingEntity booking = bookingDao.findById(id)
-      .orElseThrow(() -> new RuntimeException("Booking not found"));
-    
-    validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
-    
-    RoomEntity room = roomDao.findById(bookingCommand.roomId())
-      .orElseThrow(() -> new RuntimeException("Room not found"));
-    
-    if (!booking.getUserEntity().getId().equals(bookingCommand.userId())) {
-      throw new RuntimeException("Cannot modify booking owned by another user");
-    }
-    
-    if (!room.getId().equals(booking.getRoomEntity().getId()) &&
-      !roomService.getAvailableRooms(bookingCommand.startTime(), bookingCommand.endTime())
-        .stream()
-        .anyMatch(r -> r.id().equals(room.getId()))) {
-      throw new RuntimeException("Room is not available for the selected time slot");
-    }
-    
-    booking.setStartTime(bookingCommand.startTime());
-    booking.setEndTime(bookingCommand.endTime());
-    booking.setRoomEntity(room);
-    
-    return BookingMapper.of(bookingDao.save(booking));
   }
   
   private boolean hasConflictingBookings(Long roomId, LocalDateTime startTime, LocalDateTime endTime, Long excludeBookingId) {

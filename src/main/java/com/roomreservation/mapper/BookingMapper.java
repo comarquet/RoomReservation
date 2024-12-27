@@ -9,7 +9,6 @@ public class BookingMapper {
       bookingEntity.getId(),
       bookingEntity.getStartTime(),
       bookingEntity.getEndTime(),
-      bookingEntity.isActive(),
       bookingEntity.getRoomEntity().getId(),
       bookingEntity.getUserEntity().getId()
     );

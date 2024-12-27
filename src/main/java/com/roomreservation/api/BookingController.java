@@ -51,9 +51,11 @@ public class BookingController {
   }
   
   @PutMapping("/{id}")
-  public ResponseEntity<BookingRecord> updateBooking(
-    @PathVariable Long id,
-    @RequestBody BookingCommandRecord bookingCommand) {
-    return ResponseEntity.ok(bookingService.updateBooking(id, bookingCommand));
+  public ResponseEntity<?> updateBooking(@PathVariable Long id, @RequestBody BookingCommandRecord bookingCommand) {
+    try {
+      return ResponseEntity.ok(bookingService.updateBooking(id, bookingCommand));
+    } catch (BookingConflictException e) {
+      return ResponseEntity.status(409).body(e.getMessage());
+    }
   }
 }
