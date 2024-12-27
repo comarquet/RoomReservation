@@ -2,10 +2,13 @@ package com.roomreservation.service;
 
 import com.roomreservation.mapper.RoomMapper;
 import com.roomreservation.model.RoomEntity;
+import com.roomreservation.record.BookingRecord;
 import com.roomreservation.record.RoomRecord;
+import com.roomreservation.repository.BookingDao;
 import com.roomreservation.repository.RoomDao;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,9 +16,11 @@ import java.util.stream.Collectors;
 public class RoomService {
   
   private final RoomDao roomDao;
+  private final BookingDao bookingDao;
   
-  public RoomService(RoomDao roomDao) {
+  public RoomService(RoomDao roomDao, BookingDao bookingDao) {
     this.roomDao = roomDao;
+    this.bookingDao = bookingDao;
   }
   
   public List<RoomRecord> getAllRooms() {
@@ -49,6 +54,27 @@ public class RoomService {
   
   public void deleteRoom(Long id) {
     roomDao.deleteById(id);
+  }
+  
+  public List<RoomRecord> getAvailableRooms(LocalDateTime startTime, LocalDateTime endTime) {
+    List<RoomEntity> allRooms = roomDao.findAll();
+    return allRooms.stream()
+      .filter(room -> isRoomAvailable(room, startTime, endTime))
+      .map(RoomMapper::of)
+      .collect(Collectors.toList());
+  }
+  
+  private boolean isRoomAvailable(RoomEntity room, LocalDateTime startTime, LocalDateTime endTime) {
+    if (!room.isAvailable()) {
+      return false;
+    }
+    
+    List<BookingRecord> bookings = room.getBookingEntities();
+    return bookings.stream()
+      .noneMatch(booking ->
+        (startTime.isBefore(booking.endTime()) || startTime.isEqual(booking.endTime())) &&
+          (endTime.isAfter(booking.startTime()) || endTime.isEqual(booking.startTime()))
+      );
   }
 }
 

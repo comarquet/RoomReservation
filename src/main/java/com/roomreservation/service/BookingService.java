@@ -9,8 +9,10 @@ import com.roomreservation.record.BookingRecord;
 import com.roomreservation.repository.BookingDao;
 import com.roomreservation.repository.RoomDao;
 import com.roomreservation.repository.UserDao;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,11 +22,13 @@ public class BookingService {
   private final BookingDao bookingDao;
   private final RoomDao roomDao;
   private final UserDao userDao;
+  private final RoomService roomService;
   
-  public BookingService(BookingDao bookingDao, RoomDao roomDao, UserDao userDao) {
+  public BookingService(BookingDao bookingDao, RoomDao roomDao, UserDao userDao, RoomService roomService) {
     this.bookingDao = bookingDao;
     this.roomDao = roomDao;
     this.userDao = userDao;
+    this.roomService = roomService;
   }
   
   public List<BookingRecord> getAllBookings() {
@@ -39,20 +43,42 @@ public class BookingService {
     return BookingMapper.of(bookingEntity);
   }
   
-  public BookingRecord createBooking(BookingCommandRecord bookingCommandRecord) {
-    RoomEntity roomEntity = roomDao.findById(bookingCommandRecord.roomId())
-      .orElseThrow(() -> new RuntimeException("RoomEntity not found"));
-    UserEntity userEntity = userDao.findById(bookingCommandRecord.userId())
-      .orElseThrow(() -> new RuntimeException("UserEntity not found"));
+  @Transactional
+  public BookingRecord createBooking(BookingCommandRecord bookingCommand) {
+    validateBookingTime(bookingCommand.startTime(), bookingCommand.endTime());
     
-    BookingEntity bookingEntity = new BookingEntity();
-    bookingEntity.setRoomEntity(roomEntity);
-    bookingEntity.setUserEntity(userEntity);
-    bookingEntity.setStartTime(bookingCommandRecord.startTime());
-    bookingEntity.setEndTime(bookingCommandRecord.endTime());
+    RoomEntity room = roomDao.findById(bookingCommand.roomId())
+      .orElseThrow(() -> new RuntimeException("Room not found"));
     
-    BookingEntity savedBookingEntity = bookingDao.save(bookingEntity);
-    return BookingMapper.of(savedBookingEntity);
+    UserEntity user = userDao.findById(bookingCommand.userId())
+      .orElseThrow(() -> new RuntimeException("User not found"));
+    
+    if (!roomService.getAvailableRooms(bookingCommand.startTime(), bookingCommand.endTime())
+      .stream()
+      .anyMatch(r -> r.id().equals(room.getId()))) {
+      throw new RuntimeException("Room is not available for the selected time slot");
+    }
+    
+    BookingEntity booking = new BookingEntity();
+    booking.setStartTime(bookingCommand.startTime());
+    booking.setEndTime(bookingCommand.endTime());
+    booking.setRoomEntity(room);
+    booking.setUserEntity(user);
+    booking.setActive(true);
+    
+    return BookingMapper.of(bookingDao.save(booking));
+  }
+  
+  private void validateBookingTime(LocalDateTime startTime, LocalDateTime endTime) {
+    if (startTime.isBefore(LocalDateTime.now())) {
+      throw new RuntimeException("Cannot book in the past");
+    }
+    if (endTime.isBefore(startTime)) {
+      throw new RuntimeException("End time must be after start time");
+    }
+    if (startTime.plusHours(4).isBefore(endTime)) {
+      throw new RuntimeException("Maximum booking duration is 4 hours");
+    }
   }
   
   public void deleteBooking(Long id) {

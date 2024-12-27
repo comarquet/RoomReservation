@@ -1,8 +1,5 @@
 package com.roomreservation.api;
 
-import com.roomreservation.mapper.CardMapper;
-import com.roomreservation.model.CardEntity;
-import com.roomreservation.record.CardCommandRecord;
 import com.roomreservation.record.CardRecord;
 import com.roomreservation.service.CardService;
 import org.springframework.http.ResponseEntity;

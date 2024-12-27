@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Table(name = "SP_BOOKING")
 public class BookingEntity {
-  
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -27,7 +26,7 @@ public class BookingEntity {
   private boolean active;
   
   @ManyToOne
-  @JoinColumn(name = "room", nullable = false)
+  @JoinColumn(name = "room_id", nullable = false)
   private RoomEntity roomEntity;
   
   @ManyToOne
