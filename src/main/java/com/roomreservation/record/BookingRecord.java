@@ -7,5 +7,6 @@ public record BookingRecord(
   LocalDateTime startTime,
   LocalDateTime endTime,
   Long roomId,
+  String roomName,
   Long userId
 ) {}
