@@ -19,8 +19,6 @@ public class CardEntity {
   @Column(nullable = false, unique = true)
   private String cardNumber;
   
-  private boolean active;
-  
   @OneToOne
   @JoinColumn(name = "user_id", nullable = false, unique = true)
   private UserEntity userEntity;

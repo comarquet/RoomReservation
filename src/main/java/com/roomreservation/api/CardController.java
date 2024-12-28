@@ -23,9 +23,4 @@ public class CardController {
     return ResponseEntity.ok(cardService.getAllCards());
   }
   
-  @PostMapping("/deactivate/{userId}")
-  public ResponseEntity<Void> deactivateCard(@PathVariable Long userId) {
-    cardService.deactivateCard(userId);
-    return ResponseEntity.noContent().build();
-  }
 }

@@ -46,22 +46,10 @@ public class CardService {
     
     CardEntity cardEntity = new CardEntity();
     cardEntity.setCardNumber(cardCommand.cardNumber());
-    cardEntity.setActive(cardCommand.active());
     cardEntity.setUserEntity(userEntity);
     userEntity.setCardEntity(cardEntity);
     
     userDao.save(userEntity);
     return cardDao.save(cardEntity);
-  }
-  
-  public void deactivateCard(Long userId) {
-    UserEntity userEntity = userDao.findById(userId)
-      .orElseThrow(() -> new RuntimeException("UserEntity not found"));
-    
-    CardEntity cardEntity = userEntity.getCardEntity();
-    if (cardEntity != null) {
-      cardEntity.setActive(false);
-      cardDao.save(cardEntity);
-    }
   }
 }

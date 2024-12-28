@@ -48,7 +48,6 @@ public class UserService {
     
     CardEntity cardEntity = new CardEntity();
     cardEntity.setCardNumber("CARD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
-    cardEntity.setActive(true);
     cardEntity.setUserEntity(savedUser);
     
     savedUser.setCardEntity(cardEntity);

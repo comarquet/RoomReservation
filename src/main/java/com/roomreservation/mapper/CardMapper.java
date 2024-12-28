@@ -8,7 +8,6 @@ public class CardMapper {
     return new CardRecord(
       cardEntity.getId(),
       cardEntity.getCardNumber(),
-      cardEntity.isActive(),
       cardEntity.getUserEntity().getId()
     );
   }
