@@ -4,8 +4,8 @@ INSERT INTO SP_USER (first_name, last_name, email, password) VALUES
 
 -- Insert corresponding cards
 INSERT INTO SP_CARD (card_number, user_id) VALUES
-                                                       ('CARD-TEST001', (SELECT id FROM SP_USER WHERE email = 'test1@test.com')),
-                                                       ('CARD-TEST002', (SELECT id FROM SP_USER WHERE email = 'test2@test.com'));
+                                                       ('49F18AAA', (SELECT id FROM SP_USER WHERE email = 'test1@test.com')),
+                                                       ('F515CE10', (SELECT id FROM SP_USER WHERE email = 'test2@test.com'));
 
 -- Insert mock rooms
 INSERT INTO SP_ROOM (name, capacity) VALUES
