@@ -17,6 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -38,6 +39,7 @@ class AccessServiceTest {
   private CardEntity mockCard;
   private UserEntity mockUser;
   private RoomEntity mockRoom;
+  private final String VALID_CARD_NUMBER = "CARD-TEST001";
   
   @BeforeEach
   void setUp() {
@@ -49,7 +51,7 @@ class AccessServiceTest {
     // Setup mock card
     mockCard = new CardEntity();
     mockCard.setId(1L);
-    mockCard.setCardNumber("CARD-TEST001");
+    mockCard.setCardNumber(VALID_CARD_NUMBER);
     mockCard.setUserEntity(mockUser);
     
     // Setup mock room
@@ -69,12 +71,11 @@ class AccessServiceTest {
   @Test
   void validateAccess_Success() {
     // Arrange
-    Long cardId = 1L;
     Long roomId = 1L;
-    AccessRequestRecord request = new AccessRequestRecord(cardId, roomId);
+    AccessRequestRecord request = new AccessRequestRecord(VALID_CARD_NUMBER, roomId);
     
-    when(cardDao.existsById(cardId)).thenReturn(true);
-    when(bookingDao.findValidBooking(eq(cardId), eq(roomId), any(LocalDateTime.class)))
+    when(cardDao.findByCardNumber(VALID_CARD_NUMBER)).thenReturn(Optional.of(mockCard));
+    when(bookingDao.findValidBooking(eq(VALID_CARD_NUMBER), eq(roomId), any(LocalDateTime.class)))
       .thenReturn(mockBooking);
     
     // Act
@@ -87,11 +88,11 @@ class AccessServiceTest {
   @Test
   void validateAccess_InvalidCard() {
     // Arrange
-    Long cardId = 999L;
+    String invalidCardNumber = "INVALID-CARD";
     Long roomId = 1L;
-    AccessRequestRecord request = new AccessRequestRecord(cardId, roomId);
+    AccessRequestRecord request = new AccessRequestRecord(invalidCardNumber, roomId);
     
-    when(cardDao.existsById(cardId)).thenReturn(false);
+    when(cardDao.findByCardNumber(invalidCardNumber)).thenReturn(Optional.empty());
     
     // Act
     AccessResponseRecord response = accessService.validateAccess(request);
@@ -103,12 +104,28 @@ class AccessServiceTest {
   @Test
   void validateAccess_NoValidBooking() {
     // Arrange
-    Long cardId = 1L;
     Long roomId = 1L;
-    AccessRequestRecord request = new AccessRequestRecord(cardId, roomId);
+    AccessRequestRecord request = new AccessRequestRecord(VALID_CARD_NUMBER, roomId);
     
-    when(cardDao.existsById(cardId)).thenReturn(true);
-    when(bookingDao.findValidBooking(eq(cardId), eq(roomId), any(LocalDateTime.class)))
+    when(cardDao.findByCardNumber(VALID_CARD_NUMBER)).thenReturn(Optional.of(mockCard));
+    when(bookingDao.findValidBooking(eq(VALID_CARD_NUMBER), eq(roomId), any(LocalDateTime.class)))
+      .thenReturn(null);
+    
+    // Act
+    AccessResponseRecord response = accessService.validateAccess(request);
+    
+    // Assert
+    assertFalse(response.accessGranted());
+  }
+  
+  @Test
+  void validateAccess_ValidCardButNoBooking() {
+    // Arrange
+    Long roomId = 1L;
+    AccessRequestRecord request = new AccessRequestRecord(VALID_CARD_NUMBER, roomId);
+    
+    when(cardDao.findByCardNumber(VALID_CARD_NUMBER)).thenReturn(Optional.of(mockCard));
+    when(bookingDao.findValidBooking(eq(VALID_CARD_NUMBER), eq(roomId), any(LocalDateTime.class)))
       .thenReturn(null);
     
     // Act

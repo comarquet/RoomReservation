@@ -12,6 +12,10 @@ public interface BookingDao extends JpaRepository<BookingEntity, Long> {
   
   List<BookingEntity> findByUserEntityId(Long userId);
   
-  @Query("SELECT b FROM BookingEntity b WHERE b.userEntity.cardEntity.cardNumber = :cardId AND b.roomEntity.id = :roomId AND b.startTime <= :now AND b.endTime >= :now")
-  BookingEntity findValidBooking(Long cardId, Long roomId, LocalDateTime now);
+  @Query("SELECT b FROM BookingEntity b " +
+    "WHERE b.userEntity.cardEntity.cardNumber = :cardNumber " +
+    "AND b.roomEntity.id = :roomId " +
+    "AND b.startTime <= :now " +
+    "AND b.endTime >= :now")
+  BookingEntity findValidBooking(String cardNumber, Long roomId, LocalDateTime now);
 }
