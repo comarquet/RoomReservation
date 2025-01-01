@@ -5,11 +5,14 @@ import com.roomreservation.model.UserEntity;
 import com.roomreservation.record.UserCommandRecord;
 import com.roomreservation.record.UserRecord;
 import com.roomreservation.service.UserService;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Set;
 import java.util.List;
 
 @CrossOrigin
@@ -19,6 +22,9 @@ public class UserController {
   
   @Autowired
   private UserService userService;
+  
+  @Autowired
+  private Validator validator;
   
   @GetMapping
   public ResponseEntity<List<UserRecord>> getAllUsers() {
@@ -31,7 +37,7 @@ public class UserController {
   }
   
   @PostMapping
-  public ResponseEntity<UserRecord> createUser(@Validated @RequestBody UserCommandRecord userCommand) {
+  public ResponseEntity<Object> createUser(@Validated @RequestBody UserCommandRecord userCommand) {
     try {
       UserEntity entity = new UserEntity();
       entity.setFirstName(userCommand.firstName());
@@ -39,10 +45,24 @@ public class UserController {
       entity.setEmail(userCommand.email());
       entity.setPassword(userCommand.password());
       
+      // Validate the entity
+      Set<ConstraintViolation<UserEntity>> violations = validator.validate(entity);
+      if (!violations.isEmpty()) {
+        // Get the first validation error message
+        String errorMessage = violations.iterator().next().getMessage();
+        if (errorMessage.contains("Email")) {
+          return ResponseEntity.badRequest().body("Incorrect email format");
+        }
+        return ResponseEntity.badRequest().body(errorMessage);
+      }
+      
       UserEntity createdUser = userService.createUser(entity);
       return ResponseEntity.status(201).body(UserMapper.of(createdUser));
     } catch (RuntimeException e) {
-      return ResponseEntity.status(400).body(null);
+      if (e.getMessage().contains("Email already exists")) {
+        return ResponseEntity.badRequest().body("Email already exists");
+      }
+      return ResponseEntity.badRequest().body("An error occurred while creating the user");
     }
   }
   
@@ -64,4 +84,3 @@ public class UserController {
     return ResponseEntity.noContent().build();
   }
 }
-

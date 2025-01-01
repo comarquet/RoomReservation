@@ -26,7 +26,7 @@ public class UserEntity {
   private String lastName;
   
   @NotNull
-  @Email
+  @Email(message = "Incorrect email format")
   @Column(unique = true)
   private String email;
   
