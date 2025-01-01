@@ -88,9 +88,6 @@ public class BookingService {
     if (endTime.isBefore(startTime)) {
       throw new RuntimeException("End time must be after start time");
     }
-    if (startTime.plusHours(4).isBefore(endTime)) {
-      throw new RuntimeException("Maximum booking duration is 4 hours");
-    }
   }
   
   public void deleteBooking(Long id) {

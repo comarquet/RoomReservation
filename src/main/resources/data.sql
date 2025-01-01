@@ -15,8 +15,3 @@ INSERT INTO SP_ROOM (name, capacity) VALUES
                                                     ('Meeting Room A', 5),
                                                     ('Meeting Room B', 5),
                                                     ('Meeting Room C', 5);
-
--- Insert mock bookings
-INSERT INTO SP_BOOKING (start_time, end_time, room_id, user_id) VALUES
-                                                                         ('2024-12-31 14:30:00', '2025-01-31 15:30:00', 1, 1),
-                                                                         ('2024-12-31 14:30:00', '2025-01-31 15:30:00', 2, 2);
