@@ -1,6 +1,6 @@
 INSERT INTO SP_USER (first_name, last_name, email, password) VALUES
-                                                                 ('Test', 'User1', 'test1@test.com', '$2a$10$uI1IHoJVNPuMknMRZZwM6uTH0Bx3cq7PoYK4E7nQ7Bh67xW6shrQe'),  -- password: test123
-                                                                 ('Test', 'User2', 'test2@test.com', '$2a$10$uI1IHoJVNPuMknMRZZwM6uTH0Bx3cq7PoYK4E7nQ7Bh67xW6shrQe'); -- password: test123
+                                                                 ('Test', 'User1', 'test1@test.com', 'test'),
+                                                                 ('Test', 'User2', 'test2@test.com', 'test');
 
 -- Insert corresponding cards
 INSERT INTO SP_CARD (card_number, user_id) VALUES
