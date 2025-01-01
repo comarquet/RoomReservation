@@ -26,16 +26,20 @@ public class AccessService {
     Long roomId = requestRecord.roomId();
     LocalDateTime now = LocalDateTime.now();
     
-    // Validate card exists and is valid
-    Optional<CardEntity> cardEntity = cardDao.findByCardNumber(cardNumber);
-    if (cardEntity.isEmpty()) {
+    System.out.println("Debug - Card Number: " + cardNumber);
+    System.out.println("Debug - Room ID: " + roomId);
+    System.out.println("Debug - Current Time: " + now);
+    
+    // Validate card exists
+    if (!cardDao.findByCardNumber(cardNumber).isPresent()) {
+      System.out.println("Debug - Card not found");
       return new AccessResponseRecord(false);
     }
     
     // Validate booking
     BookingEntity booking = bookingDao.findValidBooking(cardNumber, roomId, now);
-    boolean accessGranted = booking != null;
+    System.out.println("Debug - Booking found: " + (booking != null));
     
-    return new AccessResponseRecord(accessGranted);
+    return new AccessResponseRecord(booking != null);
   }
 }
