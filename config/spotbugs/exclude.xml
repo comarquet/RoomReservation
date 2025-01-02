@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
-    <!-- Ignore EI issues in entire codebase -->
+    <!-- Ignore EI issues in data classes -->
     <Match>
-        <Bug pattern="EI,EI2"/>
-    </Match>
-    <!-- Ignore SS issues in tests -->
-    <Match>
-        <Bug pattern="SS"/>
-        <Class name="~.*Test"/>
+        <Or>
+            <Package name="~com\.roomreservation\.model.*"/>
+            <Package name="~com\.roomreservation\.record.*"/>
+            <Package name="~com\.roomreservation\.api.*"/>
+            <Package name="~com\.roomreservation\.service.*"/>
+        </Or>
+        <Bug code="EI,EI2"/>
     </Match>
 </FindBugsFilter>
