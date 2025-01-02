@@ -18,12 +18,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history for changelog generation
+          fetch-depth: 0
 
-      - name: Download build artifacts
+      - name: Download test results
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
+          name: test-results-java-17
+          path: artifacts/test-results
+
+      - name: Download JAR
+        uses: actions/download-artifact@v4
+        with:
+          name: app-jar
+          path: artifacts/jar
 
       - name: Generate changelog
         id: changelog
@@ -51,8 +58,8 @@ jobs:
             ## Changelog
             ${{ env.CHANGELOG }}
           files: |
-            artifacts/**/*.jar
-            artifacts/**/test-results/**/*
+            artifacts/test-results/**/*
+            artifacts/jar/*.jar
           draft: false
           prerelease: false
         env:
