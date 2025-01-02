@@ -7,7 +7,6 @@ import com.roomreservation.record.UserRecord;
 import com.roomreservation.repository.CardDao;
 import com.roomreservation.repository.UserDao;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

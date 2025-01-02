@@ -1,9 +1,14 @@
 package com.roomreservation;
 
-import com.roomreservation.BookingConflictException;
-import com.roomreservation.model.*;
-import com.roomreservation.record.*;
-import com.roomreservation.repository.*;
+import com.roomreservation.model.BookingEntity;
+import com.roomreservation.model.RoomEntity;
+import com.roomreservation.model.UserEntity;
+import com.roomreservation.record.BookingCommandRecord;
+import com.roomreservation.record.BookingRecord;
+import com.roomreservation.record.RoomRecord;
+import com.roomreservation.repository.BookingDao;
+import com.roomreservation.repository.RoomDao;
+import com.roomreservation.repository.UserDao;
 import com.roomreservation.service.BookingService;
 import com.roomreservation.service.RoomService;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +24,7 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class BookingServiceTest {

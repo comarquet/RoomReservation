@@ -1,7 +1,6 @@
 package com.roomreservation.service;
 
 import com.roomreservation.model.BookingEntity;
-import com.roomreservation.model.CardEntity;
 import com.roomreservation.record.AccessRequestRecord;
 import com.roomreservation.record.AccessResponseRecord;
 import com.roomreservation.repository.BookingDao;
@@ -10,7 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class AccessService {

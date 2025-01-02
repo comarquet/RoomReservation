@@ -19,7 +19,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.when;
@@ -39,7 +40,7 @@ class AccessServiceTest {
   private CardEntity mockCard;
   private UserEntity mockUser;
   private RoomEntity mockRoom;
-  private final String VALID_CARD_NUMBER = "CARD-TEST001";
+  private static final String VALID_CARD_NUMBER = "CARD-TEST001";
   
   @BeforeEach
   void setUp() {
