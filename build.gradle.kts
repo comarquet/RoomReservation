@@ -2,6 +2,9 @@ plugins {
     java
     id("org.springframework.boot") version "3.4.0"
     id("io.spring.dependency-management") version "1.1.6"
+    id("com.github.spotbugs") version "5.2.1"
+    id("checkstyle")
+    id("org.sonarqube") version "4.4.1.3373"
 }
 
 group = "com.roomreservation"
@@ -11,6 +14,23 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
     }
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "your-project-key")
+        property("sonar.organization", "your-organization")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
+
+spotbugs {
+    toolVersion.set("4.8.3")
+}
+
+checkstyle {
+    toolVersion = "10.12.7"
+    maxWarnings = 0
 }
 
 repositories {
@@ -57,4 +77,11 @@ dependencyManagement {
 
 tasks.withType<Test> {
     useJUnitPlatform()
+}
+
+tasks.withType<Checkstyle>().configureEach {
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
 }
