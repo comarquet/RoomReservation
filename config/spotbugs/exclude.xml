@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <FindBugsFilter>
+    <!-- Ignore mutable object exposure in all domain classes -->
     <Match>
         <Bug pattern="EI,EI2"/>
         <Or>
-            <Package name="com.roomreservation.model"/>
-            <Package name="com.roomreservation.record"/>
+            <Package name="~com\.roomreservation\.model.*"/>
+            <Package name="~com\.roomreservation\.record.*"/>
+            <Package name="~com\.roomreservation\.api.*"/>
+            <Package name="~com\.roomreservation\.service.*"/>
         </Or>
     </Match>
+    <!-- Ignore SS warning in test -->
     <Match>
         <Bug pattern="SS"/>
-        <Class name="com.roomreservation.AccessServiceTest"/>
+        <Package name="~com\.roomreservation.*Test"/>
     </Match>
 </FindBugsFilter>

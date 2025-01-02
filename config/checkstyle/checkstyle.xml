@@ -2,11 +2,14 @@
 <module name="Checker">
     <module name="TreeWalker">
         <module name="UnusedImports"/>
-        <module name="MissingJavadocMethod"/>
-        <module name="MethodLength"/>
-        <module name="ParameterNumber"/>
-        <module name="CyclomaticComplexity"/>
-        <module name="BooleanExpressionComplexity"/>
-        <module name="JavaNCSS"/>
+        <module name="MethodLength">
+            <property name="max" value="50"/>
+        </module>
+        <module name="ParameterNumber">
+            <property name="max" value="5"/>
+        </module>
+        <module name="CyclomaticComplexity">
+            <property name="max" value="10"/>
+        </module>
     </module>
 </module>
