@@ -26,6 +26,7 @@ sonar {
 
 spotbugs {
     toolVersion.set("4.8.3")
+    excludeFilter.set(file("config/spotbugs/exclude.xml"))
 }
 
 checkstyle {
