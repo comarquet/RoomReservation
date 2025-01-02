@@ -18,8 +18,8 @@ java {
 
 sonar {
     properties {
-        property("sonar.projectKey", "your-project-key")
-        property("sonar.organization", "your-organization")
+        property("sonar.projectKey", "comarquet_RoomReservation")
+        property("sonar.organization", "comarquet")
         property("sonar.host.url", "https://sonarcloud.io")
     }
 }
