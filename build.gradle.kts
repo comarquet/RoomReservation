@@ -4,7 +4,6 @@ plugins {
     id("io.spring.dependency-management") version "1.1.6"
     id("com.github.spotbugs") version "5.2.1"
     id("checkstyle")
-    id("org.sonarqube") version "4.4.1.3373"
 }
 
 group = "com.roomreservation"
@@ -13,16 +12,6 @@ version = "0.0.1-SNAPSHOT"
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(21)
-    }
-}
-
-sonar {
-    properties {
-        property("sonar.projectKey", "comarquet_RoomReservation")
-        property("sonar.organization", "comarquet")
-        property("sonar.host.url", "https://sonarcloud.io")
-        property("sonar.gradle.skipCompile", "true")
-        property("sonar.qualitygate.wait", "true")
     }
 }
 
