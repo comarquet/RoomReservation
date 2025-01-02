@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Service class handling user operations including creation, authentication, and management.
+ * This service manages user accounts and their associated access cards.
+ */
 @Transactional
 @Service
 public class UserService {
@@ -20,11 +24,20 @@ public class UserService {
   private final CardDao cardDao;
 //  private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
   
+  /**
+   * Constructs a new UserService with required dependencies.
+   * @param userDao Data access object for user operations
+   * @param cardDao Data access object for card operations
+   */
   public UserService(UserDao userDao, CardDao cardDao) {
     this.userDao = userDao;
     this.cardDao = cardDao;
   }
   
+  /**
+   * Retrieves all users in the system.
+   * @return List of UserRecord objects representing all users
+   */
   public List<UserRecord> getAllUsers() {
     return userDao.findAll().stream()
       .map(UserMapper::of)
@@ -35,6 +48,12 @@ public class UserService {
     return userDao.findById(id).orElseThrow(() -> new RuntimeException("UserEntity not found"));
   }
   
+  /**
+   * Creates a new user with an associated access card.
+   * @param userEntity User details including name, email, and password
+   * @return UserEntity The created user with generated card
+   * @throws RuntimeException if email already exists
+   */
   @Transactional
   public UserEntity createUser(UserEntity userEntity) {
     if (userDao.findByEmailIgnoreCase(userEntity.getEmail()) != null) {
@@ -73,6 +92,13 @@ public class UserService {
     userDao.deleteById(id);
   }
   
+  /**
+   * Validates user login credentials.
+   * @param email User's email address
+   * @param password User's password
+   * @return UserEntity if validation succeeds
+   * @throws RuntimeException if credentials are invalid
+   */
   public UserEntity validateLogin(String email, String password) {
     UserEntity user = userDao.findByEmailIgnoreCase(email);
 //    if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
