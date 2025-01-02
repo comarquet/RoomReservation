@@ -9,6 +9,8 @@ on:
 jobs:
   analyze:
     runs-on: ubuntu-latest
+    environment:
+      name: sonar
     permissions:
       contents: read
       security-events: write
@@ -25,6 +27,9 @@ jobs:
           distribution: 'temurin'
           cache: gradle
 
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
       - name: Cache SonarCloud packages
         uses: actions/cache@v3
         with:
@@ -32,11 +37,13 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      - name: Run SonarCloud Analysis
+      - name: Build and analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: ./gradlew sonarqube
+        run: |
+          chmod +x gradlew
+          ./gradlew build sonar
 
       - name: Run SpotBugs
         run: ./gradlew spotbugsMain
@@ -58,3 +65,4 @@ jobs:
             build/reports/spotbugs/
             build/reports/checkstyle/
             build/reports/gitleaks/
+            build/sonar/

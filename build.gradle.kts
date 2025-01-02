@@ -21,6 +21,8 @@ sonar {
         property("sonar.projectKey", "comarquet_RoomReservation")
         property("sonar.organization", "comarquet")
         property("sonar.host.url", "https://sonarcloud.io")
+        property("sonar.gradle.skipCompile", "true")
+        property("sonar.qualitygate.wait", "true")
     }
 }
 
