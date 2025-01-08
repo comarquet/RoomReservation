@@ -14,7 +14,7 @@ public class CardService {
   
   private final CardDao cardDao;
   
-  public CardService(CardDao cardDao, UserDao userDao) {
+  public CardService(CardDao cardDao) {
     this.cardDao = cardDao;
   }
   
