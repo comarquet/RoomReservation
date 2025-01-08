@@ -35,18 +35,14 @@ jobs:
       - name: Generate changelog
         id: changelog
         run: |
-          # Get the previous tag
           PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
           
           if [ -z "$PREV_TAG" ]; then
-            # If no previous tag exists, get all commits
             CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges)
           else
-            # Get commits between tags
             CHANGELOG=$(git log --pretty=format:"- %s (%h)" --no-merges ${PREV_TAG}..HEAD)
           fi
           
-          # Escape newlines and set output
           echo "CHANGELOG<<EOF" >> $GITHUB_ENV
           echo "$CHANGELOG" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
@@ -55,7 +51,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           body: |
-            ## Changelog
             ${{ env.CHANGELOG }}
           files: |
             artifacts/test-results/**/*
