@@ -1,13 +1,9 @@
 package com.roomreservation.service;
 
 import com.roomreservation.mapper.CardMapper;
-import com.roomreservation.model.CardEntity;
-import com.roomreservation.model.UserEntity;
-import com.roomreservation.record.CardCommandRecord;
 import com.roomreservation.record.CardRecord;
 import com.roomreservation.repository.CardDao;
 import com.roomreservation.repository.UserDao;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
