@@ -37,16 +37,6 @@ public class BookingController {
     return ResponseEntity.ok(bookingService.getAllBookings());
   }
   
-  /**
-   * Retrieves a specific booking by ID.
-   * @param id ID of the booking to retrieve
-   * @return ResponseEntity containing the requested booking
-   */
-  @GetMapping("/{id}")
-  public ResponseEntity<BookingRecord> getBookingById(@PathVariable Long id) {
-    return ResponseEntity.ok(bookingService.getBookingById(id));
-  }
-  
   @GetMapping("/user/{userId}")
   public ResponseEntity<List<BookingRecord>> getUserBookings(@PathVariable Long userId) {
     return ResponseEntity.ok(bookingService.getBookingsByUserId(userId));

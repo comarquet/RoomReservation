@@ -38,12 +38,6 @@ public class BookingService {
       .collect(Collectors.toList());
   }
   
-  public BookingRecord getBookingById(Long id) {
-    BookingEntity bookingEntity = bookingDao.findById(id)
-      .orElseThrow(() -> new RuntimeException("BookingEntity not found"));
-    return BookingMapper.of(bookingEntity);
-  }
-  
   @Transactional
   public BookingRecord createBooking(BookingCommandRecord bookingCommand) {
     try {
