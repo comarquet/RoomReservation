@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
  * REST Controller handling room access validation requests.
  * Provides endpoints for validating card access to rooms.
  */
-@CrossOrigin
 @RestController
 @RequestMapping("/access")
 public class AccessController {
