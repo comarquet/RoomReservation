@@ -1,6 +1,6 @@
 package com.roomreservation.service;
 
-import com.roomreservation.BookingConflictException;
+import com.roomreservation.config.BookingConflictException;
 import com.roomreservation.mapper.BookingMapper;
 import com.roomreservation.model.BookingEntity;
 import com.roomreservation.model.RoomEntity;

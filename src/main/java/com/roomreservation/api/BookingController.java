@@ -1,6 +1,6 @@
 package com.roomreservation.api;
 
-import com.roomreservation.BookingConflictException;
+import com.roomreservation.config.BookingConflictException;
 import com.roomreservation.record.BookingCommandRecord;
 import com.roomreservation.record.BookingRecord;
 import com.roomreservation.service.BookingService;
