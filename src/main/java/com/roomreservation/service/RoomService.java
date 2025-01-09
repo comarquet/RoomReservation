@@ -61,7 +61,6 @@ public class RoomService {
   public RoomRecord createRoom(RoomRecord roomRecord) {
     RoomEntity roomEntity = new RoomEntity();
     roomEntity.setName(roomRecord.name());
-    roomEntity.setCapacity(roomRecord.capacity());
     RoomEntity savedRoomEntity = roomDao.save(roomEntity);
     return RoomMapper.of(savedRoomEntity);
   }
@@ -78,7 +77,6 @@ public class RoomService {
     RoomEntity roomEntity = roomDao.findById(id)
       .orElseThrow(() -> new RuntimeException("RoomEntity not found"));
     roomEntity.setName(roomRecord.name());
-    roomEntity.setCapacity(roomRecord.capacity());
     RoomEntity updatedRoomEntity = roomDao.save(roomEntity);
     return RoomMapper.of(updatedRoomEntity);
   }

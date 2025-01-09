@@ -8,10 +8,10 @@ INSERT INTO SP_CARD (card_number, user_id) VALUES
                                                        ('F515CE10', (SELECT id FROM SP_USER WHERE email = 'test2@test.com'));
 
 -- Insert mock rooms
-INSERT INTO SP_ROOM (name, capacity) VALUES
-                                                    ('Conference Room A', 10),
-                                                    ('Conference Room B', 10),
-                                                    ('Conference Room C', 10),
-                                                    ('Meeting Room A', 5),
-                                                    ('Meeting Room B', 5),
-                                                    ('Meeting Room C', 5);
+INSERT INTO SP_ROOM (name) VALUES
+                                                    ('Conference Room A'),
+                                                    ('Conference Room B'),
+                                                    ('Conference Room C'),
+                                                    ('Meeting Room A'),
+                                                    ('Meeting Room B'),
+                                                    ('Meeting Room C');

@@ -50,7 +50,6 @@ class RoomServiceTest {
     mockRoom = new RoomEntity();
     mockRoom.setId(1L);
     mockRoom.setName("Test Room");
-    mockRoom.setCapacity(10);
     
     // Setup mock bookings list
     mockBookings = new ArrayList<>();
@@ -60,7 +59,7 @@ class RoomServiceTest {
   @Test
   void createRoom_Success() {
     // Arrange
-    RoomRecord roomRecord = new RoomRecord(null, "Test Room", 10, List.of());
+    RoomRecord roomRecord = new RoomRecord(null, "Test Room", List.of());
     when(roomDao.save(any(RoomEntity.class))).thenReturn(mockRoom);
     
     // Act
@@ -69,7 +68,6 @@ class RoomServiceTest {
     // Assert
     assertNotNull(result);
     assertEquals(mockRoom.getName(), result.name());
-    assertEquals(mockRoom.getCapacity(), result.capacity());
   }
   
   @Test
@@ -141,7 +139,7 @@ class RoomServiceTest {
   void updateRoom_Success() {
     // Arrange
     Long roomId = 1L;
-    RoomRecord updateRecord = new RoomRecord(roomId, "Updated Room", 15, List.of());
+    RoomRecord updateRecord = new RoomRecord(roomId, "Updated Room", List.of());
     when(roomDao.findById(roomId)).thenReturn(Optional.of(mockRoom));
     when(roomDao.save(any(RoomEntity.class))).thenReturn(mockRoom);
     
@@ -151,7 +149,6 @@ class RoomServiceTest {
     // Assert
     assertNotNull(result);
     assertEquals(updateRecord.name(), result.name());
-    assertEquals(updateRecord.capacity(), result.capacity());
   }
   
   @Test

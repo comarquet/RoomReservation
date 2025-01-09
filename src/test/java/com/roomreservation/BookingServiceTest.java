@@ -55,7 +55,6 @@ class BookingServiceTest {
     mockRoom = new RoomEntity();
     mockRoom.setId(1L);
     mockRoom.setName("Test Room");
-    mockRoom.setCapacity(10);
     
     startTime = LocalDateTime.now().plusHours(1);
     endTime = startTime.plusHours(2);
@@ -77,8 +76,7 @@ class BookingServiceTest {
     when(roomDao.findById(mockRoom.getId())).thenReturn(Optional.of(mockRoom));
     when(userDao.findById(mockUser.getId())).thenReturn(Optional.of(mockUser));
     when(roomService.getAvailableRooms(any(), any()))
-      .thenReturn(List.of(new RoomRecord(mockRoom.getId(), mockRoom.getName(),
-        mockRoom.getCapacity(), List.of())));
+      .thenReturn(List.of(new RoomRecord(mockRoom.getId(), mockRoom.getName(), List.of())));
     when(bookingDao.save(any())).thenReturn(mockBooking);
     
     BookingRecord result = bookingService.createBooking(command);

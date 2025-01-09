@@ -41,13 +41,6 @@ public class RoomEntity {
   private String name;
   
   /**
-   * Maximum number of people the room can accommodate.
-   * Used for room selection and capacity planning.
-   */
-  @Column(nullable = false)
-  private int capacity;
-  
-  /**
    * List of all bookings associated with this room.
    * One room can have many bookings (One-to-Many relationship).
    * Cascade operations ensure proper handling of related bookings.

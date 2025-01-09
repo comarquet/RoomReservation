@@ -23,7 +23,6 @@ public class RoomMapper {
     return new RoomRecord(
       roomEntity.getId(),
       roomEntity.getName(),
-      roomEntity.getCapacity(),
       roomEntity.getBookingEntities()
     );
   }
