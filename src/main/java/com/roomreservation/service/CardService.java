@@ -9,6 +9,10 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service managing access card operations in the system.
+ * Handles card assignment and management for users.
+ */
 @Service
 public class CardService {
   
@@ -18,6 +22,11 @@ public class CardService {
     this.cardDao = cardDao;
   }
   
+  /**
+   * Retrieves all cards in the system.
+   *
+   * @return List of CardRecord representing all cards
+   */
   public List<CardRecord> getAllCards() {
     return cardDao.findAll().stream()
       .map(CardMapper::of)

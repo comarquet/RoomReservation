@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * REST Controller for authentication operations.
+ * Handles user login and authentication-related endpoints.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -20,6 +24,15 @@ public class AuthController {
     this.userService = userService;
   }
   
+  /**
+   * Authenticates a user's login credentials.
+   *
+   * @param loginRequest Contains user email and password
+   * @return ResponseEntity containing UserRecord if authentication is successful
+   * @throws RuntimeException if credentials are invalid
+   * @see LoginRequestRecord
+   * @see UserRecord
+   */
   @PostMapping("/login")
   public ResponseEntity<UserRecord> login(@RequestBody LoginRequestRecord loginRequest) {
     UserEntity user = userService.validateLogin(loginRequest.email(), loginRequest.password());

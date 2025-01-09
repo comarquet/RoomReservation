@@ -14,8 +14,9 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
- * Service class handling user operations including creation, authentication, and management.
- * This service manages user accounts and their associated access cards.
+ * Service managing user operations in the system.
+ * Handles user creation, authentication, and profile management.
+ * Also manages the relationship between users and their access cards.
  */
 @Transactional
 @Service
@@ -24,11 +25,6 @@ public class UserService {
   private final CardDao cardDao;
 //  private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
   
-  /**
-   * Constructs a new UserService with required dependencies.
-   * @param userDao Data access object for user operations
-   * @param cardDao Data access object for card operations
-   */
   public UserService(UserDao userDao, CardDao cardDao) {
     this.userDao = userDao;
     this.cardDao = cardDao;
@@ -36,7 +32,8 @@ public class UserService {
   
   /**
    * Retrieves all users in the system.
-   * @return List of UserRecord objects representing all users
+   *
+   * @return List of UserRecord representing all users
    */
   public List<UserRecord> getAllUsers() {
     return userDao.findAll().stream()
@@ -44,14 +41,23 @@ public class UserService {
       .collect(Collectors.toList());
   }
   
+  /**
+   * Retrieves a specific user by their ID.
+   *
+   * @param id The ID of the user to retrieve
+   * @return UserEntity representing the requested user
+   * @throws RuntimeException if user not found
+   */
   public UserEntity getUserById(Long id) {
     return userDao.findById(id).orElseThrow(() -> new RuntimeException("UserEntity not found"));
   }
   
   /**
-   * Creates a new user with an associated access card.
+   * Creates a new user in the system.
+   * Automatically generates and assigns an access card to the new user.
+   *
    * @param userEntity User details including name, email, and password
-   * @return UserEntity The created user with generated card
+   * @return UserEntity representing the created user with generated card
    * @throws RuntimeException if email already exists
    */
   @Transactional
@@ -79,6 +85,14 @@ public class UserService {
     return "CARD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
   }
   
+  /**
+   * Updates an existing user's information.
+   *
+   * @param id ID of the user to update
+   * @param userEntityDetails New user details
+   * @return UserEntity representing the updated user
+   * @throws RuntimeException if user not found
+   */
   public UserEntity updateUser(Long id, UserEntity userEntityDetails) {
     UserEntity userEntity = getUserById(id);
     userEntity.setFirstName(userEntityDetails.getFirstName());
@@ -88,12 +102,19 @@ public class UserService {
     return userDao.save(userEntity);
   }
   
+  /**
+   * Deletes a user from the system.
+   *
+   * @param id ID of the user to delete
+   */
   public void deleteUser(Long id) {
     userDao.deleteById(id);
   }
   
   /**
    * Validates user login credentials.
+   * Currently uses plain text password comparison.
+   *
    * @param email User's email address
    * @param password User's password
    * @return UserEntity if validation succeeds

@@ -17,6 +17,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Service managing room booking operations in the system.
+ * Handles creation, modification, and deletion of bookings while enforcing business rules
+ * such as booking time constraints and room availability.
+ */
 @Service
 public class BookingService {
   
@@ -32,12 +37,30 @@ public class BookingService {
     this.roomService = roomService;
   }
   
+  /**
+   * Retrieves all bookings in the system.
+   *
+   * @return List of BookingRecord representing all bookings
+   */
   public List<BookingRecord> getAllBookings() {
     return bookingDao.findAll().stream()
       .map(BookingMapper::of)
       .collect(Collectors.toList());
   }
   
+  /**
+   * Creates a new booking in the system.
+   * Performs validation checks including:
+   * - Room availability for the requested time slot
+   * - Booking time constraints (not in past, maximum duration)
+   * - Room existence
+   * - User existence
+   *
+   * @param bookingCommand Contains booking details including time, room, and user
+   * @return BookingRecord representing the created booking
+   * @throws BookingConflictException if room is already booked for the requested time
+   * @throws RuntimeException if validation fails or resources not found
+   */
   @Transactional
   public BookingRecord createBooking(BookingCommandRecord bookingCommand) {
     try {
@@ -75,6 +98,20 @@ public class BookingService {
     }
   }
   
+  /**
+   * Validates the time constraints for a booking.
+   * Enforces the following rules:
+   * - Booking cannot be in the past
+   * - End time must be after start time
+   * - Maximum booking duration is 4 hours
+   *
+   * @param startTime The proposed booking start time
+   * @param endTime The proposed booking end time
+   * @throws RuntimeException if any of the following conditions are met:
+   *         - Start time is in the past
+   *         - End time is before start time
+   *         - Booking duration exceeds 4 hours
+   */
   private void validateBookingTime(LocalDateTime startTime, LocalDateTime endTime) {
     if (startTime.isBefore(LocalDateTime.now())) {
       throw new RuntimeException("Cannot book in the past");
@@ -87,16 +124,40 @@ public class BookingService {
     }
   }
   
+  /**
+   * Deletes a booking from the system.
+   *
+   * @param id ID of the booking to delete
+   */
   public void deleteBooking(Long id) {
     bookingDao.deleteById(id);
   }
   
+  /**
+   * Retrieves all bookings for a specific user.
+   *
+   * @param userId ID of the user whose bookings to retrieve
+   * @return List of BookingRecord for the specified user
+   */
   public List<BookingRecord> getBookingsByUserId(Long userId) {
     return bookingDao.findByUserEntityId(userId).stream()
       .map(BookingMapper::of)
       .collect(Collectors.toList());
   }
   
+  /**
+   * Updates an existing booking.
+   * Validates the modification ensuring:
+   * - Room availability for new time slot
+   * - Booking time constraints
+   * - User owns the booking
+   *
+   * @param id ID of the booking to update
+   * @param bookingCommand New booking details
+   * @return BookingRecord representing the updated booking
+   * @throws BookingConflictException if room is already booked for the requested time
+   * @throws RuntimeException if validation fails or booking not found
+   */
   @Transactional
   public BookingRecord updateBooking(Long id, BookingCommandRecord bookingCommand) {
     try {
@@ -139,6 +200,17 @@ public class BookingService {
     }
   }
   
+  /**
+   * Checks for any conflicting bookings for a room during a specified time period.
+   * A conflict occurs when there is an overlap between the requested time slot
+   * and any existing booking for the room.
+   *
+   * @param roomId The ID of the room to check
+   * @param startTime Start time of the period to check
+   * @param endTime End time of the period to check
+   * @param excludeBookingId Optional booking ID to exclude from the check (used during updates)
+   * @return true if there are any conflicting bookings, false otherwise
+   */
   private boolean hasConflictingBookings(Long roomId, LocalDateTime startTime, LocalDateTime endTime, Long excludeBookingId) {
     return bookingDao.findByRoomEntityId(roomId).stream()
       .filter(booking -> !booking.getId().equals(excludeBookingId))

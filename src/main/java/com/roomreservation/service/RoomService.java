@@ -13,8 +13,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Service class managing room-related operations.
+ * Service managing room-related operations in the system.
  * Handles room creation, updates, deletions, and availability checks.
+ * Implements business logic for room management and booking validation.
  */
 @Service
 public class RoomService {
@@ -22,11 +23,6 @@ public class RoomService {
   private final RoomDao roomDao;
   private final BookingDao bookingDao;
   
-  /**
-   * Constructs a RoomService with required dependencies.
-   * @param roomDao Data access object for room operations
-   * @param bookingDao Data access object for booking operations
-   */
   public RoomService(RoomDao roomDao, BookingDao bookingDao) {
     this.roomDao = roomDao;
     this.bookingDao = bookingDao;
@@ -34,7 +30,8 @@ public class RoomService {
   
   /**
    * Retrieves all rooms in the system.
-   * @return List of RoomRecord objects representing all rooms
+   *
+   * @return List of RoomRecord representing all rooms
    */
   public List<RoomRecord> getAllRooms() {
     return roomDao.findAll().stream()
@@ -43,7 +40,8 @@ public class RoomService {
   }
   
   /**
-   * Retrieves a room by its ID.
+   * Retrieves a specific room by its ID.
+   *
    * @param id The ID of the room to retrieve
    * @return RoomRecord representing the requested room
    * @throws RuntimeException if room is not found
@@ -55,8 +53,9 @@ public class RoomService {
   }
   
   /**
-   * Creates a new room.
-   * @param roomRecord Room details including name and capacity
+   * Creates a new room in the system.
+   *
+   * @param roomRecord Contains room details including name and capacity
    * @return RoomRecord representing the created room
    */
   public RoomRecord createRoom(RoomRecord roomRecord) {
@@ -67,6 +66,14 @@ public class RoomService {
     return RoomMapper.of(savedRoomEntity);
   }
   
+  /**
+   * Updates an existing room's information.
+   *
+   * @param id ID of the room to update
+   * @param roomRecord New room details
+   * @return RoomRecord representing the updated room
+   * @throws RuntimeException if room not found
+   */
   public RoomRecord updateRoom(Long id, RoomRecord roomRecord) {
     RoomEntity roomEntity = roomDao.findById(id)
       .orElseThrow(() -> new RuntimeException("RoomEntity not found"));
@@ -76,15 +83,24 @@ public class RoomService {
     return RoomMapper.of(updatedRoomEntity);
   }
   
+  /**
+   * Deletes a room from the system.
+   *
+   * @param id ID of the room to delete
+   */
   public void deleteRoom(Long id) {
     roomDao.deleteById(id);
   }
   
   /**
-   * Checks room availability for a given time period.
+   * Checks room availability for a specified time period.
+   * A room is considered available if it has no overlapping bookings
+   * during the specified time period.
+   *
    * @param startTime Start of the time period to check
    * @param endTime End of the time period to check
-   * @return List of RoomRecord objects representing available rooms
+   * @return List of RoomRecord representing available rooms
+   * @throws IllegalArgumentException if startTime is after endTime
    */
   public List<RoomRecord> getAvailableRooms(LocalDateTime startTime, LocalDateTime endTime) {
     List<RoomEntity> allRooms = roomDao.findAll();
@@ -94,6 +110,16 @@ public class RoomService {
       .collect(Collectors.toList());
   }
   
+  /**
+   * Checks if a specific room is available during a given time period.
+   * A room is considered available if it has no bookings that overlap
+   * with the specified time period.
+   *
+   * @param room The room entity to check
+   * @param startTime Start of the time period to check
+   * @param endTime End of the time period to check
+   * @return true if the room is available, false if there are any overlapping bookings
+   */
   private boolean isRoomAvailable(RoomEntity room, LocalDateTime startTime, LocalDateTime endTime) {
     List<BookingRecord> bookings = room.getBookingEntities();
     return bookings.stream()

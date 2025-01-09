@@ -9,6 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * REST Controller for managing access cards.
+ * Provides endpoints for retrieving and managing card information.
+ */
 @RestController
 @RequestMapping("/api/cards")
 public class CardController {
@@ -19,6 +23,12 @@ public class CardController {
     this.cardService = cardService;
   }
   
+  /**
+   * Retrieves all cards in the system.
+   *
+   * @return ResponseEntity containing list of all cards
+   * @see CardRecord
+   */
   @GetMapping
   public ResponseEntity<List<CardRecord>> getAllCards() {
     return ResponseEntity.ok(cardService.getAllCards());

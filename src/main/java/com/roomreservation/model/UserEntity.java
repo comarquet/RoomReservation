@@ -9,7 +9,10 @@ import lombok.NoArgsConstructor;
 
 /**
  * Entity representing a user in the system.
- * Contains user profile information and associated access card details.
+ * Maps to the SP_USER table in the database and manages user information
+ * including personal details and access credentials.
+ *
+ * @see CardEntity
  */
 @Entity
 @Data
@@ -19,7 +22,9 @@ import lombok.NoArgsConstructor;
 public class UserEntity {
   
   /**
-   * Unique identifier for the user
+   * Unique identifier for the user.
+   * Auto-generated using database sequence.
+   * Cannot be updated once set.
    */
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,19 +32,23 @@ public class UserEntity {
   private Long id;
   
   /**
-   * User's first name
+   * User's first name.
+   * Required field for user identification.
    */
   @NotNull
   private String firstName;
   
   /**
-   * User's last name
+   * User's last name.
+   * Required field for user identification.
    */
   @NotNull
   private String lastName;
   
   /**
-   * User's email address (must be unique)
+   * User's email address.
+   * Must be unique in the system and properly formatted.
+   * Used for login and communication purposes.
    */
   @NotNull
   @Email(message = "Incorrect email format")
@@ -47,13 +56,17 @@ public class UserEntity {
   private String email;
   
   /**
-   * User's password
+   * User's password.
+   * Required for authentication.
+   * Should be stored in encrypted format.
    */
   @NotNull
   private String password;
   
   /**
-   * User's associated access card
+   * User's associated access card.
+   * One-to-One relationship with CardEntity.
+   * Cascade operations ensure proper handling of the associated card.
    */
   @OneToOne(mappedBy = "userEntity", cascade = CascadeType.ALL, orphanRemoval = true)
   private CardEntity cardEntity;
