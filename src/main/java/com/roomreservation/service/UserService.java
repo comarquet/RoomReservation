@@ -81,10 +81,6 @@ public class UserService {
     return userDao.save(savedUser);
   }
   
-  private String generateCardNumber() {
-    return "CARD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
-  }
-  
   /**
    * Updates an existing user's information.
    *
