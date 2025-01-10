@@ -39,17 +39,11 @@ public class AccessService {
     Long roomId = requestRecord.roomId();
     LocalDateTime now = LocalDateTime.now();
     
-    System.out.println("Debug - Card Number: " + cardNumber);
-    System.out.println("Debug - Room ID: " + roomId);
-    System.out.println("Debug - Current Time: " + now);
-    
     if (!cardDao.findByCardNumber(cardNumber).isPresent()) {
-      System.out.println("Debug - Card not found");
       return new AccessResponseRecord(false);
     }
     
     BookingEntity booking = bookingDao.findValidBooking(cardNumber, roomId, now);
-    System.out.println("Debug - Booking found: " + (booking != null));
     
     return new AccessResponseRecord(booking != null);
   }
