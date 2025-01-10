@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class UserService {
   private final UserDao userDao;
   private final CardDao cardDao;
-//  private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
   
   public UserService(UserDao userDao, CardDao cardDao) {
     this.userDao = userDao;
@@ -67,7 +66,6 @@ public class UserService {
     }
     
     userEntity.setId(null);
-//    userEntity.setPassword(passwordEncoder.encode(userEntity.getPassword()));
     userEntity.setPassword(userEntity.getPassword());
     UserEntity savedUser = userDao.save(userEntity);
     
@@ -118,7 +116,6 @@ public class UserService {
    */
   public UserEntity validateLogin(String email, String password) {
     UserEntity user = userDao.findByEmailIgnoreCase(email);
-//    if (user == null || !passwordEncoder.matches(password, user.getPassword())) {
     if (user == null || !password.equals(user.getPassword())) {
       throw new RuntimeException("Invalid email or password");
     }
